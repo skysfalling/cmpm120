@@ -10,31 +10,23 @@ class Play extends Phaser.Scene {
         this.load.image('starfield', './assets/starfield.png');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
-
-   
     }
 
     create() {
+
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
 
-        // green UI background
-        this.add.rectangle(0, borderUISize + borderPadding, game.config.width , borderUISize * 2, m_color.getColorHexInt("green")).setOrigin(0, 0);
-
-        //#region WHITE BORDERS
-        this.add.rectangle(0, 0, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, game.config.height - borderUISize, game.config.width, borderUISize, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(0, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-        this.add.rectangle(game.config.width - borderUISize, 0, borderUISize, game.config.height, 0xFFFFFF).setOrigin(0 ,0);
-        //#endregion
-
         // add Rocket (p1)
-        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0.5, 0);
+        this.p1Rocket = new Rocket(this, game.config.width/2, game.config.height - borderUISize - borderPadding, 'rocket').setOrigin(0, 0);
 
         // add Spaceships (x3)
-        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30).setOrigin(0, 0);
-        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20).setOrigin(0,0);
-        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10).setOrigin(0,0);
+        this.ship01 = new Spaceship(this, game.config.width + borderUISize*6, borderUISize*4, 'spaceship', 0, 30);
+        this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20);
+        this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10);
+
+
+
 
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -57,7 +49,7 @@ class Play extends Phaser.Scene {
         this.p1Score = 0;
 
         // display score
-        let scoreConfig = {
+        let headerConfig = {
             fontFamily: 'Courier New',
             fontSize: '30px',
             backgroundColor: m_color.black,
@@ -66,22 +58,37 @@ class Play extends Phaser.Scene {
             padding: {
                 top: 5,
                 bottom: 5,
+                left: 5,
+                right: 5
             },
             fixedWidth: 100
         }
-        this.scoreValueText = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
+
+        // green UI background
+        this.add.rectangle(game.config.width/2, game.config.height, game.config.width , borderUISize * 2, m_color.getColorHexInt("white")).setOrigin(0.5, 0.5);
+
+        // green UI background
+        this.add.rectangle(0, 0, game.config.width , borderUISize * 2, m_color.getColorHexInt("green")).setOrigin(0, 0);
+
+        // score value
+        this.scoreValueText = this.add.text(game.config.width/4 - (borderUISize + borderPadding), borderUISize, this.p1Score, headerConfig).setOrigin(0.5,0.5);
+
+        // time passed
+        this.timePassedText = this.add.text( (game.config.width*0.75) + (borderUISize + borderPadding), borderUISize, 'Time Passed', headerConfig).setOrigin(0.5,0.5);
+
+        // title
+        headerConfig.fixedWidth = 0;
+        this.titleText = this.add.text(game.config.width/2, borderUISize, "Rocket Patrol", headerConfig).setOrigin(0.5,0.5);
 
         // GAME OVER flag
         this.gameOver = false;
 
         // << SETUP TIMER >>
-        scoreConfig.fixedWidth = 0;
-        this.timePassedText = this.add.text(game.config.width - (borderUISize + borderPadding),  borderUISize + borderPadding*2, 'Time Passed', scoreConfig);
         this.gameTimer = this.time.addEvent({
             delay: 60000, // 60 seconds in milliseconds
             callback: function(){
-                this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', headerConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', headerConfig).setOrigin(0.5);
                 this.gameOver = true;
             },
             callbackScope: this,
@@ -94,7 +101,7 @@ class Play extends Phaser.Scene {
         // << UPDATE CLOCK UI >>
         if (!this.gameOver) {
             const timePassed = Math.floor(this.gameTimer.getElapsedSeconds());
-            this.timePassedText.setText(`${timePassed}/60`).setOrigin(1,0);
+            this.timePassedText.setText(`${timePassed}/60`);
         }
 
         // check key input for restart / menu
@@ -159,4 +166,6 @@ class Play extends Phaser.Scene {
         
         this.sound.play('sfx_explosion');
       }
+    
+
 }
