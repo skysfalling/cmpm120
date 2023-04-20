@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../styles.css">
+
+    <title>Rocket Patrol</title>
+    <style>
+        body {
+            background-color: lightgreen;
+        }
+
+        #game-container {
+            display: inline-block;
+            padding: 10px;
+            justify-content: center;
+            align-items: center;
+            border: 5px solid black;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+    </style>
+</head>
+<body>
+    <h1 id="title">Rocket Patrol</h1>
+
+    <div id="game-container">
+        <script src="./lib/phaser.js"></script>
+        <script src="./src/prefabs/Rocket.js"></script>
+        <script src="./src/prefabs/Spaceship.js"></script>
+        <script src="./src/scenes/Menu.js"></script>
+        <script src="./src/scenes/Play.js"></script>
+        <script src="./src/main.js"></script>
+    </div>
+
+</body>
+</html>

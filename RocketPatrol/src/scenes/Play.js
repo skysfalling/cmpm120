@@ -74,16 +74,29 @@ class Play extends Phaser.Scene {
         // GAME OVER flag
         this.gameOver = false;
 
-        // 60-second play clock
+        // << SETUP TIMER >>
         scoreConfig.fixedWidth = 0;
-        this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
-            this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
-            this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
-            this.gameOver = true;
-        }, null, this);
+        this.timePassedText = this.add.text(game.config.width - (borderUISize + borderPadding),  borderUISize + borderPadding*2, 'Time Passed', scoreConfig);
+        this.gameTimer = this.time.addEvent({
+            delay: 60000, // 60 seconds in milliseconds
+            callback: function(){
+                this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
+                this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
+                this.gameOver = true;
+            },
+            callbackScope: this,
+            loop: false
+        });
     }
 
     update() {
+
+        // << UPDATE CLOCK UI >>
+        if (!this.gameOver) {
+            const timePassed = Math.floor(this.gameTimer.getElapsedSeconds());
+            this.timePassedText.setText(`${timePassed}/60`).setOrigin(1,0);
+        }
+
         // check key input for restart / menu
         if(this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();

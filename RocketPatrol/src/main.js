@@ -2,10 +2,11 @@ let config = {
     type: Phaser.CANVAS,
     width: 640,
     height: 480,
-    scene: [ Menu, Play ]
+    parent: 'game-container',
+    scene: [ Menu, Play ],
 }
 
-let game = new Phaser.Game(config);
+const game = new Phaser.Game(config);
 
 // set UI sizes
 let borderUISize = game.config.height / 15;
@@ -20,7 +21,6 @@ let m_color = {
     green: "#62C25B",
     white: "#FFFFFF",
     black: "#101119",
-  
     getColorHexInt: function(colorName) {
       return parseInt(this[colorName].replace("#", "0x"));
     }
