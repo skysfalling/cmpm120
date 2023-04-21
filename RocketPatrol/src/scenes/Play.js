@@ -153,15 +153,15 @@ class Play extends Phaser.Scene {
         for (let bullet of this.p1Rocket.bullets.getChildren()) {
             if (this.checkCollision(bullet, this.ship03)) {
                 this.shipExplode(this.ship03);
-                bullet.destroy()
+                bullet.destroy();
             }
             if (this.checkCollision(bullet, this.ship02)) {
                 this.shipExplode(this.ship02);
-                bullet.destroy()
+                bullet.destroy();
             }
             if (this.checkCollision(bullet, this.ship01)) {
                 this.shipExplode(this.ship01);
-                bullet.destroy()
+                bullet.destroy();
             }
         }
     }
