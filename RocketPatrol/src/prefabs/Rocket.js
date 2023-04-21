@@ -32,7 +32,6 @@ class Rocket extends Phaser.GameObjects.Sprite {
 
     }
 
-
     update() {
         // left/right movement
         if(keyLEFT.isDown && this.x >= borderUISize + this.width) {
@@ -40,42 +39,5 @@ class Rocket extends Phaser.GameObjects.Sprite {
         } else if (keyRIGHT.isDown && this.x <= game.config.width - borderUISize - this.width) {
             this.x += this.moveSpeed;
         }
-        
-        // fire button
-        if(Phaser.Input.Keyboard.JustDown(keyF)) {
-            this.isFiring = true;
-            this.lastFired = 0;
-        }
-        else if (Phaser.Input.Keyboard.JustUp(keyF))
-        {
-            this.isFiring = false;
-        }
-
-        // << FIRE DELAY >>
-        if (this.isFiring)
-        {
-            if (this.scene.time.now - this.lastFired > this.fireDelay) {
-
-                this.sfxRocket.play();
-                console.log("new bullet");
-
-                // Create a new bullet sprite
-                let newBullet = this.bullets.create(this.x,this.y, 'bullet');
-                this.bullets.setVelocityY(-200, 1);
-                newBullet.setActive(true);
-                newBullet.setVisible(true);
-
-                this.lastFired = this.scene.time.now;
-            }
-        }
-
-    }
-
-
-
-    // reset rocket to "ground"
-    reset() {
-        this.isFiring = false;
-        this.y = game.config.height - borderUISize - borderPadding;
     }
 }

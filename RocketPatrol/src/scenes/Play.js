@@ -25,9 +25,6 @@ class Play extends Phaser.Scene {
         this.ship02 = new Spaceship(this, game.config.width + borderUISize*3, borderUISize*5 + borderPadding*2, 'spaceship', 0, 20);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize*6 + borderPadding*4, 'spaceship', 0, 10);
 
-
-
-
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
         keyR = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
@@ -122,18 +119,50 @@ class Play extends Phaser.Scene {
             this.ship03.update();
         }
 
-        // check collisions
-        if(this.checkCollision(this.p1Rocket, this.ship03)) {
-            this.p1Rocket.reset();
-            this.shipExplode(this.ship03);
+
+
+        // fire button
+        if(Phaser.Input.Keyboard.JustDown(keyF)) {
+            this.isFiring = true;
+            this.lastFired = 0;
         }
-        if (this.checkCollision(this.p1Rocket, this.ship02)) {
-            this.p1Rocket.reset();
-            this.shipExplode(this.ship02);
+        else if (Phaser.Input.Keyboard.JustUp(keyF))
+        {
+            this.isFiring = false;
         }
-        if (this.checkCollision(this.p1Rocket, this.ship01)) {
-            this.p1Rocket.reset();
-            this.shipExplode(this.ship01);
+
+        // << FIRE DELAY >>
+        if (this.isFiring)
+        {
+            if (this.time.now - this.lastFired > this.p1Rocket.fireDelay) {
+
+                this.p1Rocket.sfxRocket.play();
+                console.log("new bullet");
+
+                // Create a new bullet sprite
+                let newBullet = this.p1Rocket.bullets.create(this.p1Rocket.x,this.p1Rocket.y, 'bullet');
+                this.p1Rocket.bullets.setVelocityY(-200, 1);
+                newBullet.setActive(true);
+                newBullet.setVisible(true);
+
+                this.lastFired = this.time.now;
+            }
+        }
+
+        // Iterate over the bullet group and check for collisions
+        for (let bullet of this.p1Rocket.bullets.getChildren()) {
+            if (this.checkCollision(bullet, this.ship03)) {
+                this.shipExplode(this.ship03);
+                bullet.destroy()
+            }
+            if (this.checkCollision(bullet, this.ship02)) {
+                this.shipExplode(this.ship02);
+                bullet.destroy()
+            }
+            if (this.checkCollision(bullet, this.ship01)) {
+                this.shipExplode(this.ship01);
+                bullet.destroy()
+            }
         }
     }
 

@@ -1,3 +1,13 @@
+body {
+    color: white;
+    background-color: grey;
+
+    justify-self: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20%;
+}
+
 #title {
     display: inline-block;
     padding: 10px;
