@@ -6,6 +6,9 @@ body {
     justify-content: center;
     text-align: center;
     margin-top: 20%;
+
+    border: 5px solid black;
+
 }
 
 #title {

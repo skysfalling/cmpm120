@@ -7,11 +7,28 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.scene = scene;
         this.x = Math.floor(x);
         this.y = Math.floor(y);
-
         this.spawnHeight = game.config.height * 0.66;
+
+        this.dead = false;
 
         this.points = pointValue;   // store pointValue
         this.moveSpeed = game.settings.spaceshipSpeed;         // pixels per frame 
+
+        this.setScale(4);
+        this.setAngle(-90);
+
+        // spaceship fly animation config
+        this.anims.create({
+            key: 'spaceship_fly',
+            frames: this.anims.generateFrameNumbers('spaceship_fly', { 
+                start: 0, 
+                end: 2, 
+                first: 0
+            }),
+            frameRate: 8,
+            repeat: -1
+        });
+        this.anims.play('spaceship_fly');  // play fly animation
 
         this.boxGizmo = {
             enable: function() {
@@ -68,37 +85,58 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         };
 
         // Add white border around spaceship
-        this.boxGizmo.enable.call(this);
+        //this.boxGizmo.enable.call(this);
     
-        this.textGizmo.enable.call(this, "spaceship");
+        //this.textGizmo.enable.call(this, "spaceship");
     }
 
     update() {
         // move spaceship left
         this.x -= this.moveSpeed;
+
+        // Wrap around the world
+        this.scene.physics.world.wrap(this, this.width / 4);
+
+        /*
         // wrap around from left edge to right edge
-        if(this.x <= 0 - this.width) {
+        if(this.x <= -game.config.width) {
             this.reset();
         }
+        */
 
         // Add white border around spaceship
-        this.boxGizmo.update.call(this);
+        //this.boxGizmo.update.call(this);
 
         // Add white text to spaceship
-        this.textGizmo.update.call(this, this.x + "/" + this.y);
+        //this.textGizmo.update.call(this, this.x + "/" + this.y);
     }
 
     // position reset
     reset() {
-        // get random height
-        let min = borderUISize * 2;
-        let max = min + this.spawnHeight;
-        let randomHeight = Math.floor(Math.random() * (max - min + 1)) + min;
 
-        this.x = game.config.width;
-        this.y = randomHeight;
+        this.setActive(false);
+        this.setVisible(false);
 
-        // Reset the position of the text object
-        this.textObject.setPosition(this.x, this.y);
+        this.scene.time.addEvent({
+            delay: 500,
+            callback: () => {
+                this.scene.children.add(this);
+                this.setActive(true);
+                this.setVisible(true);
+
+                // get random height
+                let min = borderUISize * 2;
+                let max = min + this.spawnHeight;
+                let randomHeight = Math.floor(Math.random() * (max - min + 1)) + min;
+
+                this.x = game.config.width - 50;
+                this.y = randomHeight;
+            },
+            loop: false
+        });
+
+        this.dead = false;
+
+
     }
 }
