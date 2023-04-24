@@ -5,26 +5,34 @@ body {
     justify-self: center;
     justify-content: center;
     text-align: center;
-    margin-top: 20%;
 
     border: 5px solid black;
-
 }
 
 #title {
-    display: inline-block;
+    margin: 5%;
     padding: 10px;
     justify-content: center;
     align-items: center;
     text-align: center;
-    border: 20px solid purple;
-    border-radius: 50px;
+    border: 10px solid purple;
+    border-radius: 20px;
     background-color: darkmagenta;
 
     color: white;
+}
 
-    position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+#innerbody {
+    margin: 5%;
+    padding: 10px;
+    height: 500px;
+
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 5px solid black;
+    border-radius: 20px;
+    background-color: rgba(152, 198, 238, 0.459);
+
+    color: white;
 }

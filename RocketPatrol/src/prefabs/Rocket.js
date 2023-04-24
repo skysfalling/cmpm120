@@ -6,10 +6,10 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);   // add to existing, displayList, updateList
         scene.physics.add.existing(this) // add to physics
 
-        this.setScale(2);
+        this.setScale(1);
 
         this.aimMoveSpeed = 2;         // pixels per frame
-        this.rocketForce = 200;         // pixels per frame
+        this.rocketForce = 400;         // pixels per frame
         this.rocketRotationForce = 20;
 
         this.sfxRocket = scene.sound.add('sfx_rocket'); // add rocket sfx
@@ -117,10 +117,9 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
 
     update() {
 
+        
         this.currentState.update();
-
         this.textGizmo.update.call(this, this.currentState.name);
-
 
         // Check if rocket has gone out of bounds
         if (this.y < -this.height || this.x < -this.width || this.x > game.config.width + this.width) {

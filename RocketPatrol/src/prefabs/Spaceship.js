@@ -1,21 +1,36 @@
 // Spaceship prefab
 class Spaceship extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, pointValue) {
+    constructor(scene, name, x, y, texture, frame, pointValue) {
         super(scene, x, y, texture, frame);
         scene.add.existing(this);   // add to existing scene
         
+        this.name = name;
         this.scene = scene;
+
+        // active position
         this.x = Math.floor(x);
         this.y = Math.floor(y);
-        this.spawnHeight = game.config.height * 0.66;
 
+        // start position
+        this.startX = this.x;
+        this.startY = this.y;
+
+        // start scale / rotation
+        this.setScale(2);
+        this.setAngle(-90);
+
+        // speed
+        this.moveSpeed = game.settings.spaceshipSpeed;
+    
+        // spawn range
+        this.spawnHeightOffsetMin =  -25; 
+        this.spawnHeightOffsetMax = 25; 
+
+        // death state
         this.dead = false;
 
-        this.points = pointValue;   // store pointValue
-        this.moveSpeed = game.settings.spaceshipSpeed;         // pixels per frame 
-
-        this.setScale(4);
-        this.setAngle(-90);
+        // point value
+        this.points = pointValue; 
 
         // spaceship fly animation config
         this.anims.create({
@@ -30,7 +45,8 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         });
         this.anims.play('spaceship_fly');  // play fly animation
 
-        this.boxGizmo = {
+        // << BOX COLLIDER GIZMO >>
+        this.boxColliderGizmo = {
             enable: function() {
                 this.graphics = scene.add.graphics();
             },
@@ -45,10 +61,6 @@ class Spaceship extends Phaser.GameObjects.Sprite {
                 const rectX = this.x - rectWidth / 2;
                 const rectY = this.y - rectHeight / 2;
                 this.graphics.strokeRoundedRect(rectX, rectY, rectWidth, rectHeight, 1);
-
-                // << SPAWN OUTLINE >>
-                this.graphics.lineStyle(1, 0xff0000, 1);
-                this.graphics.strokeRoundedRect(0, borderUISize * 2, game.config.width, this.spawnHeight, 1); 
             },
 
             disable: function(){
@@ -56,12 +68,45 @@ class Spaceship extends Phaser.GameObjects.Sprite {
                 this.graphics.clear();
             }
         };
+        this.boxColliderGizmo.enable.call(this);
+    
+        // << SPAWN RANGE GIZMO >>
+        this.spawnRangeGizmo = {
+            enable: function() {
+                this.graphics = scene.add.graphics();
+            },
+        
+            update: function() {
 
-        this.textGizmo = {
+                // << SPAWN OUTLINE >>
+                let spawnRangeSize = this.spawnHeightOffsetMax - this.spawnHeightOffsetMin;
+                this.graphics.lineStyle(1, 0xff0000, 1);
+                this.graphics.strokeRoundedRect(0, this.startY - spawnRangeSize/2, game.config.width, spawnRangeSize, 1); 
+
+                // << ROCKET START Y LINE >>
+                this.graphics.lineStyle(0.1, 0xffff00, 1);
+                this.graphics.beginPath();
+                this.graphics.moveTo(0, this.startY);
+                this.graphics.lineTo(game.config.width, this.startY);
+                this.graphics.closePath();
+                this.graphics.strokePath();
+
+            },
+
+            disable: function(){
+                // Clear previous graphics
+                this.graphics.clear();
+            }
+        };
+        this.spawnRangeGizmo.enable.call(this);
+
+        // << TEXT GIZMO >>
+        this.spaceshipNameGizmo = {
             enable: function(text = "gizmos") {
                 // Create the text object
                 this.textObject = scene.add.text(this.x, this.y, text);
-                this.textObject.setOrigin(0.5, 2);
+                this.textObject.setOrigin(2, 0.5);
+                this.textObject.setFontSize(10); // Set font size to 24 pixels
                 this.textObject.setVisible(true);
                 scene.add.existing(this.textObject);  // Add the text object as a child of the spaceship
             },
@@ -83,60 +128,49 @@ class Spaceship extends Phaser.GameObjects.Sprite {
             }
 
         };
-
-        // Add white border around spaceship
-        //this.boxGizmo.enable.call(this);
-    
-        //this.textGizmo.enable.call(this, "spaceship");
+        this.spaceshipNameGizmo.enable.call(this, "gizmo");
     }
 
     update() {
         // move spaceship left
         this.x -= this.moveSpeed;
 
-        // Wrap around the world
-        this.scene.physics.world.wrap(this, this.width / 4);
-
-        /*
-        // wrap around from left edge to right edge
-        if(this.x <= -game.config.width) {
+        // 'kill' spaceship once hits right edge
+        if(this.x <= 0 && !this.dead) {
+            
+            this.dead = true;
             this.reset();
-        }
-        */
 
-        // Add white border around spaceship
-        //this.boxGizmo.update.call(this);
+        }
+        
+        // update gizmos
+        this.boxColliderGizmo.update.call(this);
+        this.spawnRangeGizmo.update.call(this);
 
         // Add white text to spaceship
-        //this.textGizmo.update.call(this, this.x + "/" + this.y);
+        this.spaceshipNameGizmo.update.call(this, this.name);
     }
 
     // position reset
     reset() {
 
+        // disable
         this.setActive(false);
         this.setVisible(false);
 
-        this.scene.time.addEvent({
-            delay: 500,
-            callback: () => {
-                this.scene.children.add(this);
-                this.setActive(true);
-                this.setVisible(true);
+        // get random height
+        let min = this.spawnHeightOffsetMin;
+        let max = this.spawnHeightOffsetMax;
+        let randomHeight = Math.floor(Math.random() * (max - min + 1)) + min;
 
-                // get random height
-                let min = borderUISize * 2;
-                let max = min + this.spawnHeight;
-                let randomHeight = Math.floor(Math.random() * (max - min + 1)) + min;
+        // add random height to start spawn
+        this.x = this.startX;
+        this.y = this.startY + randomHeight;
 
-                this.x = game.config.width - 50;
-                this.y = randomHeight;
-            },
-            loop: false
-        });
+        // enable
+        this.setActive(true);
+        this.setVisible(true);
 
         this.dead = false;
-
-
     }
 }
