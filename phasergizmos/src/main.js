@@ -10,7 +10,7 @@ let config = {
           gravity: { y: 0 }
       }
     },  
-    scene: [ Play ],
+    scene: [ GizmoScene ],
     pixelArt: true
 }
 const game = new Phaser.Game(config);
