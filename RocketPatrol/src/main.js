@@ -23,13 +23,13 @@ let borderPadding = borderUISize / 3;
 // reserve keyboard variables
 let keyF, keyR, keyLEFT, keyRIGHT;
 
-let m_color = {
+let color_pal = {
     pink: "#F6518A",
     blue: "#4C86A8", 
     green: "#62C25B",
     white: "#FFFFFF",
     black: "#101119",
-    toHex: function(colorName) {
+    toInt: function(colorName) {
       return parseInt(this[colorName].replace("#", "0x"));
     }
   };

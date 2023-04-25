@@ -18,7 +18,7 @@ class Menu extends Phaser.Scene {
         let defaultTextStyle = {
             fontFamily: 'Courier',
             fontSize: '28px',
-            color: m_color.pink,
+            color: color_pal.pink,
             align: 'right',
             padding: 5,
             fixedWidth: 0,
@@ -28,7 +28,7 @@ class Menu extends Phaser.Scene {
         this.add.text(game.config.centerX, game.config.centerY - borderUISize - borderPadding, 'ROCKET PATROL', defaultTextStyle).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2, 'Use ←→ arrows to move & (F) to fire', defaultTextStyle).setOrigin(0.5);
         
-        defaultTextStyle.color = m_color.green;
+        defaultTextStyle.color = color_pal.green;
         this.add.text(game.config.width/2, game.config.height/2 + borderUISize + borderPadding, 'Press ← for Novice or → for Expert', defaultTextStyle).setOrigin(0.5);
 
         // define keys

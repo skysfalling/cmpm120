@@ -1,53 +1,96 @@
 class Play extends Phaser.Scene {
     constructor() {
         super('playScene');
+
+        this.speed = 1;
+
+        this.infiniteRot = 0;
+
+        this.infiniteMove = 0;
+        this.moveFlip = false;
+
+        this.lineRange = 100;
     }
   
     preload() {
-        this.testGizmos = new Gizmos(this);
+
+        // [[ MAIN GIZMOS OBJECT ]]
+        this.Gizmos = new Gizmos(this);
     }
   
     create() {
-
-        /*
-        this.boxGizmo = gizmos.box.create(this);
-        this.lineRangeGizmo = gizmos.lineRange.create(this);
-        this.textGizmo = gizmos.text.create(this, game.config.width/2, game.config.height/2, "Gizmos", 30);
-        this.textGizmo2 = gizmos.text.create(this, game.config.width/2, game.config.height/2, "Gizmos", 30);
-        this.circleGizmo = gizmos.circle.create(this)
-        */
-
         // >> CREATE TEXT GIZMO :: [ scene , x, y, text, fontSize ]
-        this.text = this.testGizmos.createText(this.infiniteRot, game.config.height/2, "text1", "50px");
+        // this "created" instance will not move
+        this.text = this.Gizmos.createText(this.infiniteRot, game.config.height/2, "text1", "50px");
+        
+        // >> TOGGLE DEBUG :: //
+        const toggleButton = document.querySelector("#toggle-gizmos");
+
+        // store a reference to the scene object in a variable
+        const scene = this;
+
+        // toggle squares
+        toggleButton.innerHTML = "squares: " + scene.Gizmos.showRectGizmos;
+        toggleButton.addEventListener("click", function () { 
+            scene.Gizmos.showRectGizmos = !scene.Gizmos.showRectGizmos; 
+            toggleButton.innerHTML = "squares: " + scene.Gizmos.showRectGizmos;
+        });
 
     }
   
     update() {
 
         // >> {{ ALWAYS CLEAR GRAPHICS FIRST }} //
-        this.testGizmos.graphics.clear();
+        this.Gizmos.graphics.clear();
+
+        // update infinite move
+        if (!this.moveFlip && this.infiniteMove < 1) { this.infiniteMove += 0.01 * this.speed}
+        else if (!this.moveFlip && this.infiniteMove >= 1) {this.moveFlip = true; this.infiniteMove = 1;}
+        else if (this.moveFlip && this.infiniteMove > 0) {this.infiniteMove -= 0.01 * this.speed;}
+        else if (this.moveFlip && this.infiniteMove <= 0) {this.moveFlip = false; this.infiniteMove = 0;}
+        //console.log(this.move)
 
         // update infinite rotation
-        if (this.infiniteRot < 360) { this.infiniteRot += 1; } else { this.infiniteRot = 0; }
+        if (this.infiniteRot < 360) { this.infiniteRot += this.speed; } else { this.infiniteRot = 0; }
         //console.log(this.rotation)
+
+        // >> DEBUG SLIDER : : // 
+        // Get slider percentage from HTML page (( range 0 - 100 ))
+        let debugSpeedSlider = document.getElementById('speed-slider');
+        this.speed = debugSpeedSlider.value / 10;  // turns slider into percentage
+        // Set slider text
+        let debugSpeed = document.getElementById('speed-info');
+        debugSpeed.innerHTML = "speed " + this.speed;
+
+        
 
         // ---------------------------------------------------------------------------------------------------
 
-        // >> CIRCLE GIZMO :: [ x, y, radius, color ]
-        this.testGizmos.drawCircleLine(200, 200, 200, m_color.toHex("blue"));
+        // >> CIRCLE GIZMO :: [ x, y, radius, color, rotation, lineWidth ]
+        this.Gizmos.drawCircle(screen.center.x, screen.center.y, 200, color_pal.toInt("blue"), this.infiniteRot);
+        
+        
+        if (this.Gizmos.showRectGizmos == true)
+        {
+            console.log("show rect " + this.Gizmos.showRectGizmos);
+            // >> RECT LINE GIZMO :: [ x , y, width, height, rotation , color ]
+            this.Gizmos.drawRect(screen.center.x, screen.center.y, 200, 200, this.infiniteRot, color_pal.toInt("green"));
 
-        // >> RECT GIZMO :: [ x , y, width, height, rotation , color ]
-        this.testGizmos.drawRect(200, 200, 200, 200, this.infiniteRot, m_color.toHex("green"));
+            // >> RECT FILL GIZMO :: [ x , y, width, height, rotation , color ]
+            this.Gizmos.drawRectFill(screen.center.x, screen.center.y, 100, 100, -this.infiniteRot, color_pal.toInt("pink"));
+        }
 
         // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height, rotation, horzLine, vertLine ]
         let startpoint =  { x: 0, y: 0 };
-        let endpoint = { x: game.config.width, y: game.config.height };
-        let width = 100;
-        let height = 100;
-        this.testGizmos.lineRange(startpoint, endpoint, width, height);
+        let endpoint = { x: screen.height, y: screen.height };
+
+        this.lineRange = this.infiniteMove * 300;
+
+        this.Gizmos.lineRange(startpoint, endpoint, this.lineRange);
 
         // >> UPDATE TEXT : [ textObject, x, y, text, fontSize ]
-        this.testGizmos.updateText(this.text, this.infiniteRot, game.config.height/2, "test", "40px")
+        // create() text first, then call this function
+        this.Gizmos.updateText(this.text, this.infiniteRot + screen.center.x / 3, screen.center.y, "hello <3", "40px");
 
     }
 }
