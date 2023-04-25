@@ -1,6 +1,6 @@
-class Play extends Phaser.Scene {
+class GizmoScene extends Phaser.Scene {
     constructor() {
-        super('playScene');
+        super('GizmosScene');
 
         this.speed = 1;
 

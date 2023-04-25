@@ -9,10 +9,13 @@ class Gizmos {
     }
   
     //#region  [[ CIRCLE ]]
-    drawCircle(x, y, radius, color, rotation, lineWidth = 2) {
-        this.graphics.lineStyle(lineWidth, color, lineWidth);
+    drawCircle(x, y, radius, color, rotation = 0, lineWidth = 1, depth = 1) {
+        this.circleLayer = this.scene.add.graphics();
+
+        this.circleLayer.lineStyle(lineWidth, color, lineWidth);
         var circleConfig = new Phaser.Geom.Circle(x, y, radius);
-        this.graphics.strokeCircleShape(circleConfig);
+        this.circleLayer.strokeCircleShape(circleConfig);
+        this.circleLayer.depth = depth; // ensure circle layer is on top
 
         let center = { x: x, y: y };
         let radiusPoint = { x: x + radius, y: y };
@@ -85,33 +88,31 @@ class Gizmos {
     //#endregion
     
     line (startpoint, endpoint, color, lineWidth = 1, opacity = 1) {
-        const graphics = this.graphics;
+        const graphics = this.scene.add.graphics();
         graphics.lineStyle(lineWidth, color);
         graphics.beginPath();
         graphics.moveTo(startpoint.x, startpoint.y);
         graphics.lineTo(endpoint.x, endpoint.y);
         graphics.closePath();
         graphics.strokePath();
+        graphics.depth = 1;
     }
     
-    //#region  [[ LINE RANGE ]] : line from start - end ,  colored lines show width / height
-    lineRange(startpoint, endpoint, width, height) {
-
-        // TODO : Midpoint "Vertical" Line
-
+    //#region  [[ LINE RANGE ]] : line from start - end ,  colored lines show width
+    lineRange(startpoint, endpoint, width) {
         // [[ MAIN LINE]] 
         this.line(startpoint, endpoint, 0xffffff, 0.2);
 
         // [[ RANGE WIDTH ]]
         // red outerline >>  - width / 2
-        const startpointLeft = { x: startpoint.x - width/2, y: startpoint.y + width/2 };
-        const endpointLeft = { x: endpoint.x - width/2, y: endpoint.y + width/2 };
+        const startpointLeft = { x: startpoint.x, y: startpoint.y - width / 2};
+        const endpointLeft = { x: endpoint.x, y: endpoint.y - width / 2};
         this.line(startpointLeft, endpointLeft, 0xff0000, 1);
 
-        // green outerline >> + width / 2
-        const startpointRight = { x: startpoint.x + width/2, y: startpoint.y - width/2 };
-        const endpointRight = { x: endpoint.x + width/2, y: endpoint.y - width/2 };
-        this.line(startpointRight, endpointRight, 0x00ff00, 1);
+        // red outerline >> + width / 2
+        const startpointRight = { x: startpoint.x, y: startpoint.y + width / 2};
+        const endpointRight = { x: endpoint.x, y: endpoint.y + width / 2};
+        this.line(startpointRight, endpointRight, 0xff0000, 1);
 
         // [[ MID POINT ]]
         // white crossline >>
@@ -127,10 +128,10 @@ class Gizmos {
 
         // [[ END LINES]]
         // white end line
-        const topLeft = { x: startpoint.x - width/2, y: startpoint.y + width/2 };
-        const bottomLeft = { x: startpoint.x + width/2, y: startpoint.y - width/2 };
-        const topRight = { x: endpoint.x - width/2, y: endpoint.y + width/2 };
-        const bottomRight = { x: endpoint.x + width/2, y: endpoint.y - width/2 };
+        const topLeft = { x: startpoint.x, y: startpoint.y + width/2 };
+        const bottomLeft = { x: startpoint.x, y: startpoint.y - width/2 };
+        const topRight = { x: endpoint.x, y: endpoint.y + width/2 };
+        const bottomRight = { x: endpoint.x, y: endpoint.y - width/2 };
         this.line(topLeft, bottomLeft, 0xffffff, 1);
         this.line(topRight, bottomRight, 0xffffff, 1);
           
