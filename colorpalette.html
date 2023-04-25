@@ -121,11 +121,6 @@
 </head>
 <body>
 
-	<!----
-	<div id="palette_menu">
-	</div>
-	-->
-
 	<div id="palette_menu">
 		<div class="menu_square" id="resurrect">
 			<h1>1</h1>
@@ -144,8 +139,9 @@
 	<div id="palette_holder" class="innerbody"></div>
 	<script>
 
-		var colorPath = "./palettes/scolor-fi.txt";
+		var colorPath = "./palettes/resurrect-64.txt";
 		var colorLink = "https://lospec.com/palette-list/resurrect-64";
+
 
 		// << PALETTES >>
 		const resurrect_plt = document.getElementById("resurrect");
@@ -162,7 +158,10 @@
 			colorLink = "https://lospec.com/palette-list/scolor-fi";
 			removePalette();
 			loadPalette(colorPath, colorLink);
+
 		});
+
+		loadPalette(colorPath, colorLink);
 
 		document.addEventListener("DOMContentLoaded", loadPalette(colorPath, colorLink));
 

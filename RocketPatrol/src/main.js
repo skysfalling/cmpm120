@@ -29,7 +29,7 @@ let m_color = {
     green: "#62C25B",
     white: "#FFFFFF",
     black: "#101119",
-    getColorHexInt: function(colorName) {
+    toHex: function(colorName) {
       return parseInt(this[colorName].replace("#", "0x"));
     }
   };
