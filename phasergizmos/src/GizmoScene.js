@@ -85,6 +85,8 @@ class GizmoScene extends Phaser.Scene {
         let endpoint = { x: screen.width - 50, y: 250 };
 
         this.Gizmos.horzlineRange(1, 500, 250, 50);
+        this.Gizmos.vertLineRange(250, 0, 500, 50);
+
 
         // >> UPDATE TEXT : [ textObject, x, y, text, fontSize ]
         // create() text first, then call this function

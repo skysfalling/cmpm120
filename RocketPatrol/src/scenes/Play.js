@@ -111,7 +111,11 @@ class Play extends Phaser.Scene {
         // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height, rotation, horzLine, vertLine ]
         var startpoint =  { x: screen.leftMid.x, y: screen.leftMid.y };
         var endpoint = { x: screen.rightMid.x, y: screen.rightMid.y };
+
         this.Gizmos.horzlineRange(startpoint.x, endpoint.x, startpoint.y, 50);
+
+        this.Gizmos.vertlineRange(screen.botMid.x, screen.botMid.y, screen.topMid.y, 50);
+
 
         //#region  >>>>> UI UPDATE 
         // << UPDATE CLOCK UI >>
