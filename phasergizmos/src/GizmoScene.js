@@ -81,12 +81,10 @@ class GizmoScene extends Phaser.Scene {
         }
 
         // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height, rotation, horzLine, vertLine ]
-        let startpoint =  { x: 0, y: 0 };
-        let endpoint = { x: screen.height, y: screen.height };
+        let startpoint =  { x: 50, y: 250 };
+        let endpoint = { x: screen.width - 50, y: 250 };
 
-        this.lineRange = this.infiniteMove * 300;
-
-        this.Gizmos.lineRange(startpoint, endpoint, this.lineRange);
+        this.Gizmos.horzlineRange(1, 500, 250, 50);
 
         // >> UPDATE TEXT : [ textObject, x, y, text, fontSize ]
         // create() text first, then call this function

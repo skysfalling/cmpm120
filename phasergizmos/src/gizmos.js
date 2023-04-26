@@ -27,8 +27,6 @@ class Gizmos {
         radiusPoint.x = x + radius * cos;
         radiusPoint.y = y + radius * sin;
         this.line(center, radiusPoint, color, lineWidth);
-
-
     }
 
     drawCircleFill(x, y, radius, color) {
@@ -40,6 +38,7 @@ class Gizmos {
     //#region  [[ RECT ]]
     drawRect(x, y, width, height, rotation, color, lineWidth = 2) {
         this.graphics.lineStyle(lineWidth, color, 1);
+        console.log("draw rect " + x + "" + y  );
 
         // [[ SET ORIGIN ( 0.5 , 0.5 ) ]]
         const rectX = x - width / 2;
@@ -59,6 +58,7 @@ class Gizmos {
         this.graphics.lineTo(bottomLeft.x, bottomLeft.y);
         this.graphics.closePath();
         this.graphics.stroke();
+        this.graphics.depth = 1;
     }
 
     drawRectFill(x, y, width, height, rotation, color, lineWidth = 2) {
@@ -88,7 +88,7 @@ class Gizmos {
     //#endregion
     
     line (startpoint, endpoint, color, lineWidth = 1, opacity = 1) {
-        const graphics = this.scene.add.graphics();
+        const graphics = this.graphics;
         graphics.lineStyle(lineWidth, color);
         graphics.beginPath();
         graphics.moveTo(startpoint.x, startpoint.y);
@@ -98,43 +98,30 @@ class Gizmos {
         graphics.depth = 1;
     }
     
-    //#region  [[ LINE RANGE ]] : line from start - end ,  colored lines show width
-    lineRange(startpoint, endpoint, width) {
+    //#region  [[ LINE RANGE ]] : line from start - end ,  colored lines show height
+    horzlineRange(startX, endX, y, heightRange) {
         // [[ MAIN LINE]] 
-        this.line(startpoint, endpoint, 0xffffff, 0.2);
+        this.line({x: startX, y: y}, {x: endX, y: y}, 0xffffff, 0.2);
 
         // [[ RANGE WIDTH ]]
-        // red outerline >>  - width / 2
-        const startpointLeft = { x: startpoint.x, y: startpoint.y - width / 2};
-        const endpointLeft = { x: endpoint.x, y: endpoint.y - width / 2};
-        this.line(startpointLeft, endpointLeft, 0xff0000, 1);
+        // draw rect at center point
+        let rectX = (startX + endX) / 2;
+        this.drawRect(rectX, y, (startX + endX), heightRange, 0, 0xff0000, 1);
 
-        // red outerline >> + width / 2
-        const startpointRight = { x: startpoint.x, y: startpoint.y + width / 2};
-        const endpointRight = { x: endpoint.x, y: endpoint.y + width / 2};
-        this.line(startpointRight, endpointRight, 0xff0000, 1);
-
+        console.log("LINERANGE: " + rectX + " , " + y);
+        
         // [[ MID POINT ]]
         // white crossline >>
         const midpointStart = {
-            x: (startpointRight.x + endpointRight.x) * 0.5,
-            y: (startpointRight.y + endpointRight.y) * 0.5
+            x: (startX + endX) / 2,
+            y: y + (heightRange / 2)
         };
         const midpointEnd = {
-            x: (startpointLeft.x + endpointLeft.x) * 0.5,
-            y: (startpointLeft.y + endpointLeft.y) * 0.5
+            x: (startX + endX) / 2,
+            y: y - (heightRange / 2)
         };
         this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
-
-        // [[ END LINES]]
-        // white end line
-        const topLeft = { x: startpoint.x, y: startpoint.y + width/2 };
-        const bottomLeft = { x: startpoint.x, y: startpoint.y - width/2 };
-        const topRight = { x: endpoint.x, y: endpoint.y + width/2 };
-        const bottomRight = { x: endpoint.x, y: endpoint.y - width/2 };
-        this.line(topLeft, bottomLeft, 0xffffff, 1);
-        this.line(topRight, bottomRight, 0xffffff, 1);
-          
+        
     }
     //#endregion
 
