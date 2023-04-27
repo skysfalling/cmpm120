@@ -114,7 +114,7 @@ class Play extends Phaser.Scene {
 
         this.Gizmos.horzlineRange(startpoint.x, endpoint.x, startpoint.y, 50);
         this.Gizmos.vertlineRange(screen.botMid.x, screen.botMid.y, screen.topMid.y, 50);
-        this.Gizmos.diagonalRange(0, 0, screen.botRight.x, screen.botRight.y, 100, 100);
+        this.Gizmos.diagonalLineRange(0, 0, 400, 800);
 
         //#region  >>>>> UI UPDATE 
         // << UPDATE CLOCK UI >>

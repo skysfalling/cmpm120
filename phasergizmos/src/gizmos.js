@@ -107,7 +107,7 @@ class Gizmos {
         let rectX = (startX + endX) / 2;
         this.drawRect(rectX, y, (startX + endX), heightRange, 0, 0xff0000, 0.2);
 
-        console.log("HORZ LINERANGE: " + rectX + " , " + y);
+        //console.log("HORZ LINERANGE: " + rectX + " , " + y);
         
         // [[ MID POINT ]]
         // white crossline >>
@@ -131,7 +131,7 @@ class Gizmos {
         let rectY = (startY + endY) / 2;
         this.drawRect(x, rectY, widthRange, (startY + endY), 0, 0xff0000, 0.2);
     
-        console.log("VERT LINERANGE: " + x + " , " + rectY);
+        //console.log("VERT LINERANGE: " + x + " , " + rectY);
     
         // [[ MID POINT ]]
         // white crossline >>
@@ -146,46 +146,33 @@ class Gizmos {
         this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
     }
 
-    diagonalRange(startX, startY, endX, endY, width, height) {
-        // [[ MAIN LINE]]
+    diagonalLineRange(startX, startY, endX, endY) {
+        // [[ MAIN LINE]] 
         this.line({x: startX, y: startY}, {x: endX, y: endY}, 0xffffff, 0.2);
-      
+    
         // [[ RANGE WIDTH ]]
-        const slope = (endY - startY) / (endX - startX);
-        const angle = Math.atan(slope);
-      
-        // calculate the coordinates of the rectangle
-        const rectX1 = startX - width / 2 * Math.cos(angle) - height / 2 * Math.sin(angle);
-        const rectY1 = startY - width / 2 * Math.sin(angle) + height / 2 * Math.cos(angle);
-        const rectX2 = endX - width / 2 * Math.cos(angle) - height / 2 * Math.sin(angle);
-        const rectY2 = endY - width / 2 * Math.sin(angle) + height / 2 * Math.cos(angle);
-        const rectX3 = endX + width / 2 * Math.cos(angle) - height / 2 * Math.sin(angle);
-        const rectY3 = endY + width / 2 * Math.sin(angle) + height / 2 * Math.cos(angle);
-        const rectX4 = startX + width / 2 * Math.cos(angle) - height / 2 * Math.sin(angle);
-        const rectY4 = startY + width / 2 * Math.sin(angle) + height / 2 * Math.cos(angle);
-      
-        // draw the rectangle
-        this.graphics.lineStyle(1, 0xff0000, 1);
-        this.graphics.beginPath();
-        this.graphics.moveTo(rectX1, rectY1);
-        this.graphics.lineTo(rectX2, rectY2);
-        this.graphics.lineTo(rectX3, rectY3);
-        this.graphics.lineTo(rectX4, rectY4);
-        this.graphics.closePath();
-        this.graphics.strokePath();
-      
+        // draw rect at center point
+        let rectX = (startX + endX) / 2;
+        let rectY = (startY + endY) / 2;
+        const angle = Math.atan2(endY - startY, endX - startX);
+        this.drawRect(rectX, rectY, 100, 100, angle, 0xff0000, 1);
+    
+        console.log("DIAGONALLINERANGE: " + rectX + " , " + rectY);
+            
+        /*
         // [[ MID POINT ]]
         // white crossline >>
         const midpointStart = {
-          x: (rectX1 + rectX3) / 2,
-          y: (rectY1 + rectY3) / 2
+            x: (startX + endX) / 2,
+            y: (startY + endY) / 2 + (rectHeight / 2)
         };
         const midpointEnd = {
-          x: (rectX2 + rectX4) / 2,
-          y: (rectY2 + rectY4) / 2
+            x: (startX + endX) / 2,
+            y: (startY + endY) / 2 - (rectHeight / 2)
         };
         this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
-      }
+        */
+    }
     //#endregion
 
     //#region [[ TEXT ]]
