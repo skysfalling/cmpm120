@@ -50,10 +50,6 @@ class Play extends Phaser.Scene {
             frameRate: 30
         });
 
-        this.Gizmos.createText(screen.center.x, screen.center.y, "rocket time");
-
-
-
         //#region  >>>>> GAME UI 
         // initialize score
         this.p1Score = 0;
@@ -112,9 +108,9 @@ class Play extends Phaser.Scene {
         var startpoint =  { x: screen.leftMid.x, y: screen.leftMid.y };
         var endpoint = { x: screen.rightMid.x, y: screen.rightMid.y };
 
-        this.Gizmos.horzlineRange(startpoint.x, endpoint.x, startpoint.y, 50);
-        this.Gizmos.vertlineRange(screen.botMid.x, screen.botMid.y, screen.topMid.y, 50);
-        this.Gizmos.diagonalLineRange(0, 0, 400, 800);
+        //this.Gizmos.horzlineRange(startpoint.x, endpoint.x, startpoint.y, 50);
+        //this.Gizmos.vertlineRange(screen.botMid.x, screen.botMid.y, screen.topMid.y, 50);
+        //this.Gizmos.diagonalLineRange(0, 0, screen.botRight.x, screen.botRight.y);
 
         //#region  >>>>> UI UPDATE 
         // << UPDATE CLOCK UI >>

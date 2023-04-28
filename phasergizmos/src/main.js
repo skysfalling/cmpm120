@@ -47,7 +47,7 @@ let screen = {
     },
     botMid: {
       x: game.config.width/2,
-      y: 0
+      y: game.config.height
     },
     botLeft: { 
       x: 0, 

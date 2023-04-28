@@ -2,6 +2,8 @@ class GizmoScene extends Phaser.Scene {
     constructor() {
         super('GizmosScene');
 
+        // [[ MAIN GIZMOS OBJECT ]]
+        this.Gizmos;
         this.speed = 1;
 
         this.infiniteRot = 0;
@@ -14,27 +16,47 @@ class GizmoScene extends Phaser.Scene {
   
     preload() {
 
-        // [[ MAIN GIZMOS OBJECT ]]
         this.Gizmos = new Gizmos(this);
+
     }
   
     create() {
         // >> CREATE TEXT GIZMO :: [ scene , x, y, text, fontSize ]
         // this "created" instance will not move
         this.text = this.Gizmos.createText(this.infiniteRot, game.config.height/2, "text1", "50px");
-        
+
         // >> TOGGLE DEBUG :: //
-        const toggleButton = document.querySelector("#toggle-gizmos");
-
-        // store a reference to the scene object in a variable
-        const scene = this;
-
+        const enableRectButton = document.querySelector("#enable-rect");
         // toggle squares
-        toggleButton.innerHTML = "squares: " + scene.Gizmos.showRectGizmos;
-        toggleButton.addEventListener("click", function () { 
-            scene.Gizmos.showRectGizmos = !scene.Gizmos.showRectGizmos; 
-            toggleButton.innerHTML = "squares: " + scene.Gizmos.showRectGizmos;
+        enableRectButton.innerHTML = "squares: " + this.Gizmos.showRectGizmos;
+        enableRectButton.addEventListener("click", () => { 
+            this.Gizmos.showRectGizmos = !this.Gizmos.showRectGizmos; 
+            enableRectButton.innerHTML = "squares: " + this.Gizmos.showRectGizmos;
         });
+
+        const enableCircleButton = document.querySelector("#enable-circle");
+        // toggle squares
+        enableCircleButton.innerHTML = "circles: " + this.Gizmos.showCircleGizmos;
+        enableCircleButton.addEventListener("click", () => { 
+            this.Gizmos.showCircleGizmos = !this.Gizmos.showCircleGizmos; 
+            enableCircleButton.innerHTML = "circles: " + this.Gizmos.showCircleGizmos;
+        });
+
+        const enableTextButton = document.querySelector("#enable-text");
+        enableTextButton.innerHTML = "text: " + this.Gizmos.showTextGizmos;
+        enableTextButton.addEventListener("click", () => {
+        this.Gizmos.showTextGizmos = !this.Gizmos.showTextGizmos;
+        enableTextButton.innerHTML = "text: " + this.Gizmos.showTextGizmos;
+        });
+
+        const enableLineRangeButton = document.querySelector("#enable-line-range");
+        enableLineRangeButton.innerHTML = "line range: " + this.Gizmos.showLineRangeGizmos;
+        enableLineRangeButton.addEventListener("click", () => {
+        this.Gizmos.showLineRangeGizmos = !this.Gizmos.showLineRangeGizmos;
+        enableLineRangeButton.innerHTML = "line range: " + this.Gizmos.showLineRangeGizmos;
+        });
+
+        
 
     }
   
@@ -66,10 +88,6 @@ class GizmoScene extends Phaser.Scene {
 
         // ---------------------------------------------------------------------------------------------------
 
-        // >> CIRCLE GIZMO :: [ x, y, radius, color, rotation, lineWidth ]
-        this.Gizmos.drawCircle(screen.center.x, screen.center.y, 200, color_pal.toInt("blue"), this.infiniteRot);
-        
-        
         if (this.Gizmos.showRectGizmos == true)
         {
             console.log("show rect " + this.Gizmos.showRectGizmos);
@@ -80,17 +98,26 @@ class GizmoScene extends Phaser.Scene {
             this.Gizmos.drawRectFill(screen.center.x, screen.center.y, 100, 100, -this.infiniteRot, color_pal.toInt("pink"));
         }
 
-        // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height, rotation, horzLine, vertLine ]
-        let startpoint =  { x: 50, y: 250 };
-        let endpoint = { x: screen.width - 50, y: 250 };
+        if (this.Gizmos.showLineRangeGizmos)
+        {
+            // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height]
+            this.Gizmos.horzlineRange(screen.leftMid.x, screen.rightMid.x, screen.leftMid.y, 50);
+            this.Gizmos.vertlineRange(screen.topMid.x, screen.botMid.y, screen.topMid.y, 50);
 
-        this.Gizmos.horzlineRange(1, 500, 250, 50);
-        this.Gizmos.vertLineRange(250, 0, 500, 50);
+            this.Gizmos.diagonalLineRange(screen.topLeft.x + (this.infiniteMove * screen.width), screen.topLeft.y, screen.botRight.x - (this.infiniteMove * screen.width), screen.botRight.y);
+
+        }
 
 
-        // >> UPDATE TEXT : [ textObject, x, y, text, fontSize ]
-        // create() text first, then call this function
-        this.Gizmos.updateText(this.text, this.infiniteRot + screen.center.x / 3, screen.center.y, "hello <3", "40px");
+        if (this.Gizmos.showTextGizmos)
+        {
+            // >> UPDATE TEXT : [ textObject, x, y, text, fontSize ]
+            // create() text first, then call this function
+            this.text.setVisible(true);
+            this.Gizmos.updateText(this.text, this.infiniteRot + screen.center.x / 3, screen.center.y, "hello <3", "40px");
+            this.text.depth = 2;
+        } else { this.text.setVisible(false);}
+
 
     }
 }

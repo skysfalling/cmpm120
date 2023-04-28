@@ -5,7 +5,8 @@ class Gizmos {
 
         this.showRectGizmos = true;
         this.showCircleGizmos = true;
-
+        this.showTextGizmos = true;
+        this.showLineRangeGizmos = true;
     }
   
     //#region  [[ CIRCLE ]]
@@ -146,51 +147,72 @@ class Gizmos {
         this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
     }
 
-    diagonalLineRange(startX, startY, endX, endY) {
+    diagonalLineRange(startX, startY, endX, endY, width = 50) {
+        
         // [[ MAIN LINE]] 
         this.line({x: startX, y: startY}, {x: endX, y: endY}, 0xffffff, 0.2);
-    
-        // [[ RANGE WIDTH ]]
-        // draw rect at center point
-        let rectX = (startX + endX) / 2;
-        let rectY = (startY + endY) / 2;
-        const angle = Math.atan2(endY - startY, endX - startX);
-        this.drawRect(rectX, rectY, 100, 100, angle, 0xff0000, 1);
-    
-        console.log("DIAGONALLINERANGE: " + rectX + " , " + rectY);
-            
-        /*
+
+        // calculate the angle of the main line
+        const dx = endX - startX;
+        const dy = endY - startY;
+        const angle = Math.atan2(dy, dx);
+
+        // calculate the offset for the width lines
+        const offset = {
+            x: (width / 2) * Math.sin(angle),
+            y: (width / 2) * Math.cos(angle)
+        };
+
+        // [[ WIDTH LINES]]
+        this.line({x: startX + offset.x, y: startY - offset.y}, {x: endX + offset.x, y: endY - offset.y}, 0xff0000, 0.2);
+        this.line({x: startX - offset.x, y: startY + offset.y}, {x: endX - offset.x, y: endY + offset.y}, 0xff0000, 0.2);
+
+
         // [[ MID POINT ]]
+        const midPoint = {
+            x: startX + ((endX - startX) / 2),
+            y: startY + ((endY - startY) / 2)
+        };
+        
         // white crossline >>
-        const midpointStart = {
-            x: (startX + endX) / 2,
-            y: (startY + endY) / 2 + (rectHeight / 2)
+        const midLineStart = {
+            x: startX + (((endX - startX) / 2) + (width / 2) * Math.sin(angle)),
+            y: startY + (((endY - startY) / 2) - (width / 2) * Math.cos(angle))
         };
-        const midpointEnd = {
-            x: (startX + endX) / 2,
-            y: (startY + endY) / 2 - (rectHeight / 2)
+        const midLineEnd = {
+            x: endX - (((endX - startX) / 2) + (width / 2) * Math.sin(angle)),
+            y: endY - (((endY - startY) / 2) - (width / 2) * Math.cos(angle)),
         };
-        this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
-        */
+        this.line(midLineStart, midLineEnd, 0xffff00, 1);
+
+
+
+        // Create a text object and set its angle
+        //const text = this.scene.add.text(midPoint.x , midPoint.y, 'Hello, world!');
+        //text.setOrigin(0.5, 0.5);
+        //text.setAngle(angle);
+        
     }
     //#endregion
 
     //#region [[ TEXT ]]
     // create or update a text object
-    createText(x, y, text = "gizmos", fontSize) {
+    createText(x, y, text = "gizmos", fontSize = 20, angle = 0) {
         var textObject = this.scene.add.text(x, y, text);
         textObject.setOrigin(0.5, 0.5);
         textObject.setVisible(true);
         textObject.setFont(fontSize);
+        textObject.setAngle(angle);
         this.scene.add.existing(textObject);
         return textObject;
     }
 
     // create or update a text object
-    updateText(textObject, x, y, text = "gizmos", fontSize) {
+    updateText(textObject, x, y, text = "gizmos", fontSize = 20, angle = 0) {
         textObject.x = x;
         textObject.y = y;
         textObject.text = text;
+        textObject.setAngle(angle);
         textObject.setFont(fontSize);
     }
     //#endregion

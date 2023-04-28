@@ -1,7 +1,7 @@
 let config = {
     type: Phaser.CANVAS,
-    width: 640,
-    height: 480,
+    width: 800,
+    height: 500,
     parent: 'game-container',
     physics: {
       default: 'arcade',
@@ -54,7 +54,7 @@ let screen = {
   },
   botMid: {
     x: game.config.width/2,
-    y: game.config.height
+    y: game.config.he
   },
   botLeft: { 
     x: 0, 
