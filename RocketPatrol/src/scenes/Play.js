@@ -4,6 +4,9 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
+
+        this.Gizmos = new Gizmos(this);
+
         // load images/tile sprites
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
@@ -47,7 +50,6 @@ class Play extends Phaser.Scene {
             frameRate: 30
         });
 
-                
         //#region  >>>>> GAME UI 
         // initialize score
         this.p1Score = 0;
@@ -67,12 +69,6 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-
-        // white UI ground
-        //this.add.rectangle(game.config.width/2, game.config.height, game.config.width , borderUISize * 2, m_color.getColorHexInt("white")).setOrigin(0.5, 0.5);
-
-        // green UI background
-        //this.add.rectangle(0, 0, game.config.width , borderUISize * 2, m_color.getColorHexInt("green")).setOrigin(0, 0);
 
         // score value
         this.scoreValueText = this.add.text(game.config.width/4 - (borderUISize + borderPadding), borderUISize, this.p1Score, headerConfig).setOrigin(0.5,0.5);
@@ -105,6 +101,17 @@ class Play extends Phaser.Scene {
 
     update() {
 
+        // >> {{ ALWAYS CLEAR GRAPHICS FIRST }} //
+        this.Gizmos.graphics.clear();
+
+        // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height, rotation, horzLine, vertLine ]
+        var startpoint =  { x: screen.leftMid.x, y: screen.leftMid.y };
+        var endpoint = { x: screen.rightMid.x, y: screen.rightMid.y };
+
+        //this.Gizmos.horzlineRange(startpoint.x, endpoint.x, startpoint.y, 50);
+        //this.Gizmos.vertlineRange(screen.botMid.x, screen.botMid.y, screen.topMid.y, 50);
+        //this.Gizmos.diagonalLineRange(0, 0, screen.botRight.x, screen.botRight.y);
+
         //#region  >>>>> UI UPDATE 
         // << UPDATE CLOCK UI >>
         if (!this.gameOver) {
@@ -131,7 +138,7 @@ class Play extends Phaser.Scene {
             this.ship03.update();
         }
 
-        // << COLLISIONS >>
+        // << ROCKET COLLISIONS >>
         if (!this.ship01.dead && this.checkCollision(this.p1Rocket, this.ship01))
         {
             this.shipExplode(this.ship01);

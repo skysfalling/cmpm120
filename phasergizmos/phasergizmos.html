@@ -17,7 +17,7 @@
         <div id="game-container">
             <script src="../phaser/lib/phaser.js"></script>
             <script src="../phasergizmos/src/gizmos.js"></script>
-            <script src="../phasergizmos/src/Play.js"></script>
+            <script src="../phasergizmos/src/GizmoTesting.js"></script>
             <script src="../phasergizmos/src/main.js"></script>
         </div>
         <div class="debug-window">
@@ -28,10 +28,10 @@
                 <input type="range" min="0" max="100" value="1" id = "speed-slider" class="debug-slider">
             </div>
 
-
-            <div class = "debug-slider">
-                <button id="toggle-gizmos">True</button>
-            </div>
+            <button id ="enable-rect" class="toggle-gizmos"></button>
+            <button id ="enable-circle" class="toggle-gizmos"></button>
+            <button id ="enable-text" class="toggle-gizmos"></button>
+            <button id ="enable-line-range" class="toggle-gizmos"></button>
 
         </div>
     </div>
