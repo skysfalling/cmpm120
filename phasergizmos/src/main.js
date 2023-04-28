@@ -61,9 +61,14 @@ let screen = {
 
 let color_pal = {
     pink: "#F6518A",
+    orange: "#d45404",
+    yellow: "#f9c22b",
     blue: "#4C86A8", 
     green: "#62C25B",
+    purple: "#a884f3",
+    teal: "#0eaf9b",
     white: "#FFFFFF",
+    grey: "#3e3546",
     black: "#101119",
     toInt: function(colorName) {
       return parseInt(this[colorName].replace("#", "0x"));

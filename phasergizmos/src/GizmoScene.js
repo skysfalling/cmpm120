@@ -90,7 +90,7 @@ class GizmoScene extends Phaser.Scene {
 
         if (this.Gizmos.showRectGizmos == true)
         {
-            console.log("show rect " + this.Gizmos.showRectGizmos);
+            //console.log("show rect " + this.Gizmos.showRectGizmos);
             // >> RECT LINE GIZMO :: [ x , y, width, height, rotation , color ]
             this.Gizmos.drawRect(screen.center.x, screen.center.y, 200, 200, this.infiniteRot, color_pal.toInt("green"));
 
@@ -98,16 +98,26 @@ class GizmoScene extends Phaser.Scene {
             this.Gizmos.drawRectFill(screen.center.x, screen.center.y, 100, 100, -this.infiniteRot, color_pal.toInt("pink"));
         }
 
+        if (this.Gizmos.showCircleGizmos == true)
+        {
+            this.Gizmos.drawCircle(screen.center.x, screen.center.y, 100, color_pal.toInt("pink"), this.infiniteRot);
+        }
+
         if (this.Gizmos.showLineRangeGizmos)
         {
             // >> LINE RANGE GIZMO :: [ scene , startpoint, endpoint, width, height]
-            this.Gizmos.horzlineRange(screen.leftMid.x, screen.rightMid.x, screen.leftMid.y, 50);
-            this.Gizmos.vertlineRange(screen.topMid.x, screen.botMid.y, screen.topMid.y, 50);
+            this.Gizmos.horzlineRange(screen.leftMid.x, screen.rightMid.x, screen.leftMid.y, 50, color_pal.toInt("green"));
+            this.Gizmos.vertlineRange(screen.topMid.x, screen.botMid.y, screen.topMid.y, 50, color_pal.toInt("blue"));
 
+            // >> horz update line range
             this.Gizmos.diagonalLineRange(screen.topLeft.x + (this.infiniteMove * screen.width), screen.topLeft.y, screen.botRight.x - (this.infiniteMove * screen.width), screen.botRight.y);
+            this.Gizmos.diagonalLineRange(screen.topRight.x - (this.infiniteMove * screen.width), screen.topRight.y, screen.botLeft.x + (this.infiniteMove * screen.width), screen.botLeft.y);
+
+            // >> vert update line range
+            this.Gizmos.diagonalLineRange(screen.topRight.x , screen.topRight.y + (this.infiniteMove * screen.height), screen.botLeft.x , screen.botLeft.y - (this.infiniteMove * screen.height), 100, color_pal.toInt("blue"));
+            this.Gizmos.diagonalLineRange(screen.topLeft.x , screen.topLeft.y + (this.infiniteMove * screen.height), screen.botRight.x , screen.botRight.y - (this.infiniteMove * screen.height), 100, color_pal.toInt("blue"));
 
         }
-
 
         if (this.Gizmos.showTextGizmos)
         {

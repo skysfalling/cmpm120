@@ -9,9 +9,21 @@ class Gizmos {
         this.showLineRangeGizmos = true;
     }
   
+    // [[ LINE ]]
+    line (startpoint, endpoint, color = 0xffffff, lineWidth = 2, opacity = 1) {
+        const graphics = this.graphics;
+        graphics.lineStyle(lineWidth, color);
+        graphics.beginPath();
+        graphics.moveTo(startpoint.x, startpoint.y);
+        graphics.lineTo(endpoint.x, endpoint.y);
+        graphics.closePath();
+        graphics.strokePath();
+        graphics.depth = 1;
+    }
+
     //#region  [[ CIRCLE ]]
-    drawCircle(x, y, radius, color, rotation = 0, lineWidth = 1, depth = 1) {
-        this.circleLayer = this.scene.add.graphics();
+    drawCircle(x, y, radius, color = 0xffffff, rotation = 0, lineWidth = 2, depth = 1) {
+        this.circleLayer = this.graphics;
 
         this.circleLayer.lineStyle(lineWidth, color, lineWidth);
         var circleConfig = new Phaser.Geom.Circle(x, y, radius);
@@ -37,7 +49,7 @@ class Gizmos {
     //#endregion
 
     //#region  [[ RECT ]]
-    drawRect(x, y, width, height, rotation, color, lineWidth = 2) {
+    drawRect(x, y, width, height, rotation, color = 0xffffff, lineWidth = 2) {
         this.graphics.lineStyle(lineWidth, color, 1);
 
         // [[ SET ORIGIN ( 0.5 , 0.5 ) ]]
@@ -61,7 +73,7 @@ class Gizmos {
         this.graphics.depth = 1;
     }
 
-    drawRectFill(x, y, width, height, rotation, color, lineWidth = 2) {
+    drawRectFill(x, y, width, height, rotation, color = 0xffffff, lineWidth = 2) {
         this.graphics.fillStyle(color, 1);
         this.graphics.lineStyle(lineWidth, color);
         
@@ -86,27 +98,16 @@ class Gizmos {
         this.graphics.stroke();
     }
     //#endregion
-    
-    line (startpoint, endpoint, color, lineWidth = 1, opacity = 1) {
-        const graphics = this.graphics;
-        graphics.lineStyle(lineWidth, color);
-        graphics.beginPath();
-        graphics.moveTo(startpoint.x, startpoint.y);
-        graphics.lineTo(endpoint.x, endpoint.y);
-        graphics.closePath();
-        graphics.strokePath();
-        graphics.depth = 1;
-    }
-    
+
     //#region  [[ LINE RANGE ]] : line from start - end ,  colored lines show height
-    horzlineRange(startX, endX, y, heightRange) {
+    horzlineRange(startX, endX, y, heightRange, outerColor = 0xff0000, innerColor = 0xffffff) {
         // [[ MAIN LINE]] 
-        this.line({x: startX, y: y}, {x: endX, y: y}, 0xffffff, 0.2);
+        this.line({x: startX, y: y}, {x: endX, y: y}, innerColor, 1);
 
         // [[ RANGE WIDTH ]]
         // draw rect at center point
         let rectX = (startX + endX) / 2;
-        this.drawRect(rectX, y, (startX + endX), heightRange, 0, 0xff0000, 0.2);
+        this.drawRect(rectX, y, (startX + endX), heightRange, 0, outerColor, 1);
 
         //console.log("HORZ LINERANGE: " + rectX + " , " + y);
         
@@ -120,17 +121,17 @@ class Gizmos {
             x: (startX + endX) / 2,
             y: y - (heightRange / 2)
         };
-        this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
+        this.line(midpointStart, midpointEnd, innerColor, 1);
     }
 
-    vertlineRange(x, startY, endY, widthRange) {
+    vertlineRange(x, startY, endY, widthRange, outerColor = 0xff0000, innerColor = 0xffffff) {
         // [[ MAIN LINE]]
-        this.line({x: x, y: startY}, {x: x, y: endY}, 0xffffff, 0.2);
+        this.line({x: x, y: startY}, {x: x, y: endY}, innerColor, 1);
     
         // [[ RANGE WIDTH ]]
         // draw rect at center point
         let rectY = (startY + endY) / 2;
-        this.drawRect(x, rectY, widthRange, (startY + endY), 0, 0xff0000, 0.2);
+        this.drawRect(x, rectY, widthRange, (startY + endY), 0, outerColor, 1);
     
         //console.log("VERT LINERANGE: " + x + " , " + rectY);
     
@@ -144,13 +145,13 @@ class Gizmos {
             x: x - (widthRange / 2),
             y: (startY + endY) / 2
         };
-        this.line(midpointStart, midpointEnd, 0xffffff, 0.2);
+        this.line(midpointStart, midpointEnd, innerColor, 1);
     }
 
-    diagonalLineRange(startX, startY, endX, endY, width = 50) {
+    diagonalLineRange(startX, startY, endX, endY, width = 50, outerColor = 0xff0000, innerColor = 0xffffff) {
         
         // [[ MAIN LINE]] 
-        this.line({x: startX, y: startY}, {x: endX, y: endY}, 0xffffff, 0.2);
+        this.line({x: startX, y: startY}, {x: endX, y: endY}, innerColor, 1);
 
         // calculate the angle of the main line
         const dx = endX - startX;
@@ -164,9 +165,8 @@ class Gizmos {
         };
 
         // [[ WIDTH LINES]]
-        this.line({x: startX + offset.x, y: startY - offset.y}, {x: endX + offset.x, y: endY - offset.y}, 0xff0000, 0.2);
-        this.line({x: startX - offset.x, y: startY + offset.y}, {x: endX - offset.x, y: endY + offset.y}, 0xff0000, 0.2);
-
+        this.line({x: startX + offset.x, y: startY - offset.y}, {x: endX + offset.x, y: endY - offset.y}, outerColor, 1);
+        this.line({x: startX - offset.x, y: startY + offset.y}, {x: endX - offset.x, y: endY + offset.y}, outerColor, 1);
 
         // [[ MID POINT ]]
         const midPoint = {
@@ -183,14 +183,7 @@ class Gizmos {
             x: endX - (((endX - startX) / 2) + (width / 2) * Math.sin(angle)),
             y: endY - (((endY - startY) / 2) - (width / 2) * Math.cos(angle)),
         };
-        this.line(midLineStart, midLineEnd, 0xffff00, 1);
-
-
-
-        // Create a text object and set its angle
-        //const text = this.scene.add.text(midPoint.x , midPoint.y, 'Hello, world!');
-        //text.setOrigin(0.5, 0.5);
-        //text.setAngle(angle);
+        this.line(midLineStart, midLineEnd, innerColor, 1);
         
     }
     //#endregion
