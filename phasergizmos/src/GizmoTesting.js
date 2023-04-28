@@ -1,6 +1,6 @@
-class GizmoScene extends Phaser.Scene {
+class GizmoTesting extends Phaser.Scene {
     constructor() {
-        super('GizmosScene');
+        super('GizmoTesting');
 
         // [[ MAIN GIZMOS OBJECT ]]
         this.Gizmos;
@@ -114,8 +114,8 @@ class GizmoScene extends Phaser.Scene {
             this.Gizmos.diagonalLineRange(screen.topRight.x - (this.infiniteMove * screen.width), screen.topRight.y, screen.botLeft.x + (this.infiniteMove * screen.width), screen.botLeft.y);
 
             // >> vert update line range
-            this.Gizmos.diagonalLineRange(screen.topRight.x , screen.topRight.y + (this.infiniteMove * screen.height), screen.botLeft.x , screen.botLeft.y - (this.infiniteMove * screen.height), 100, color_pal.toInt("blue"));
-            this.Gizmos.diagonalLineRange(screen.topLeft.x , screen.topLeft.y + (this.infiniteMove * screen.height), screen.botRight.x , screen.botRight.y - (this.infiniteMove * screen.height), 100, color_pal.toInt("blue"));
+            this.Gizmos.diagonalLineRange(screen.topRight.x , screen.topRight.y + (this.infiniteMove * screen.height), screen.botLeft.x , screen.botLeft.y - (this.infiniteMove * screen.height), 100, color_pal.toInt("purple"));
+            this.Gizmos.diagonalLineRange(screen.topLeft.x , screen.topLeft.y + (this.infiniteMove * screen.height), screen.botRight.x , screen.botRight.y - (this.infiniteMove * screen.height), 100, color_pal.toInt("purple"));
 
         }
 
