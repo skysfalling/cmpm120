@@ -5,6 +5,7 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
 
         scene.add.existing(this);   // add to existing, displayList, updateList
         scene.physics.add.existing(this) // add to physics
+        this.gizmos = new Gizmos(this.scene);
 
         this.setScale(1);
 
@@ -29,53 +30,13 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
 
 
         // << TEXT GIZMO >>
-        this.textGizmo = {
-            enable: function(text = "gizmos") {
-                // Create the text object
-                this.textObject = scene.add.text(this.x, this.y, text);
-                this.textObject.setOrigin(0.5, 2);
-                this.textObject.setVisible(true);
-                scene.add.existing(this.textObject);  // Add the text object as a child of the spaceship
-            },
-            update: function(text = "gizmos") {
-                // Update the position of the text object
-                this.textObject.setPosition(this.x, this.y);
-                this.textObject.setText(text);
-            },
-            disable: function(){
-                // Clear previous graphics
-                this.textObject.setVisible(true);
-            },
-            setText: function(newText) {
-                // Set the text of the text object
-                this.text = newText;
-                if (this.textObject) {
-                    this.textObject.setText(newText);
-                }
-            }
-
-        };
-        this.textGizmo.enable.call(this, "spaceship");
-
-        /*
-        // Add a slider to change the moveSpeed
-        const slider = document.getElementById('speedSlider');
-        slider.value = this.aimMoveSpeed;
-        slider.addEventListener('input', (event) => {
-            this.aimMoveSpeed = event.target.value;
-        });
-        */
-
-        // create debug window
-        let debugWindow = document.getElementById('debug-window');
-        let rocketForce = document.createElement('p');
-        rocketForce.innerText = 'rocketForce: ' + this.rocketForce;
-        debugWindow.appendChild(rocketForce);
+        this.stateText = this.gizmos.createText(0, 0, 'state');
+        this.posText = this.gizmos.createText(0, 0, 'pos');
 
         // Initialize state machine
         this.states = {
             AIM: {
-                name: "aim state",
+                name: "aim",
                 update: () => {
                     // left/right movement
                     if(keyLEFT.isDown && this.x >= borderUISize + this.width) {
@@ -84,16 +45,18 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
                         this.x += this.aimMoveSpeed;
                     }
 
-                    if (keyF.isDown) {this.currentState = this.states.FIRE;}
+                    // Fire the rocket
+                    if (keyF.isDown) {this.states.FIRE.enter();}
 
                     // Move the rocket
                     this.scene.physics.velocityFromRotation(0, 0, this.body.velocity);
                 },
             },
             FIRE: {
-                name: "fire state",
+                name: "fire",
                 enter: () => {
                     this.sfxRocket.play();
+                    this.currentState = this.states.FIRE;
                 },
                 update: () => {
                     // Move the rocket
@@ -108,6 +71,17 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
                         this.body.setAngularVelocity(Phaser.Math.Linear(this.body.angularVelocity, 0, 0.1));
                     }
                 }
+            },
+            FREEZE: {
+                name: "freeze",
+                enter: () => {
+                    this.currentState = this.states.FREEZE;
+                    this.body.setVelocity(0, 0);
+                    this.body.setAngularVelocity(0);
+                },
+                update: () => {
+
+                }
             }
         };
 
@@ -116,15 +90,10 @@ class Rocket extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-
-        
         this.currentState.update();
-        this.textGizmo.update.call(this, this.currentState.name);
 
-        // Check if rocket has gone out of bounds
-        if (this.y < -this.height || this.x < -this.width || this.x > game.config.width + this.width) {
-            this.reset();
-        }
+        this.gizmos.updateText(this.stateText, this.x, this.y + this.height, this.currentState.name)
+        this.gizmos.updateText(this.posText, this.x, this.y - this.height, Math.floor(this.x) + " " + Math.floor(this.y));
     }
 
     reset() {

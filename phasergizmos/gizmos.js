@@ -49,7 +49,7 @@ class Gizmos {
     //#endregion
 
     //#region  [[ RECT ]]
-    drawRect(x, y, width, height, rotation, color = 0xffffff, lineWidth = 2) {
+    drawRect(x, y, width, height, rotation = 0, color = 0xffffff, lineWidth = 2) {
         this.graphics.lineStyle(lineWidth, color, 1);
 
         // [[ SET ORIGIN ( 0.5 , 0.5 ) ]]
@@ -62,6 +62,9 @@ class Gizmos {
         const bottomRight = this.rotatePoint(rectX + width, rectY + height, x, y, rotation);
         const bottomLeft = this.rotatePoint(rectX, rectY + height, x, y, rotation);
 
+
+        // console.log("rect center:", rectX, rectY, "\ncorners: ", topLeft, topRight, bottomRight, bottomLeft);
+
         // draw rect
         this.graphics.beginPath();
         this.graphics.moveTo(topLeft.x, topLeft.y);
@@ -73,7 +76,7 @@ class Gizmos {
         this.graphics.depth = 1;
     }
 
-    drawRectFill(x, y, width, height, rotation, color = 0xffffff, lineWidth = 2) {
+    drawRectFill(x, y, width, height, rotation = 0, color = 0xffffff, lineWidth = 2) {
         this.graphics.fillStyle(color, 1);
         this.graphics.lineStyle(lineWidth, color);
         
@@ -100,7 +103,7 @@ class Gizmos {
     //#endregion
 
     //#region  [[ LINE RANGE ]] : line from start - end ,  colored lines show height
-    horzlineRange(startX, endX, y, heightRange, outerColor = 0xff0000, innerColor = 0xffffff) {
+    horzlineRange(startX, endX, y, heightRange = 50, outerColor = 0xff0000, innerColor = 0xffffff) {
         // [[ MAIN LINE]] 
         this.line({x: startX, y: y}, {x: endX, y: y}, innerColor, 1);
 
@@ -124,7 +127,7 @@ class Gizmos {
         this.line(midpointStart, midpointEnd, innerColor, 1);
     }
 
-    vertlineRange(x, startY, endY, widthRange, outerColor = 0xff0000, innerColor = 0xffffff) {
+    vertlineRange(x, startY, endY, widthRange = 50, outerColor = 0xff0000, innerColor = 0xffffff) {
         // [[ MAIN LINE]]
         this.line({x: x, y: startY}, {x: x, y: endY}, innerColor, 1);
     
@@ -148,7 +151,7 @@ class Gizmos {
         this.line(midpointStart, midpointEnd, innerColor, 1);
     }
 
-    diagonalLineRange(startX, startY, endX, endY, width = 50, outerColor = 0xff0000, innerColor = 0xffffff) {
+    diagonalLineRange(startX, startY, endX, endY, widthRange = 50, outerColor = 0xff0000, innerColor = 0xffffff) {
         
         // [[ MAIN LINE]] 
         this.line({x: startX, y: startY}, {x: endX, y: endY}, innerColor, 1);
@@ -160,8 +163,8 @@ class Gizmos {
 
         // calculate the offset for the width lines
         const offset = {
-            x: (width / 2) * Math.sin(angle),
-            y: (width / 2) * Math.cos(angle)
+            x: (widthRange / 2) * Math.sin(angle),
+            y: (widthRange / 2) * Math.cos(angle)
         };
 
         // [[ WIDTH LINES]]
@@ -176,12 +179,12 @@ class Gizmos {
         
         // white crossline >>
         const midLineStart = {
-            x: startX + (((endX - startX) / 2) + (width / 2) * Math.sin(angle)),
-            y: startY + (((endY - startY) / 2) - (width / 2) * Math.cos(angle))
+            x: startX + (((endX - startX) / 2) + (widthRange / 2) * Math.sin(angle)),
+            y: startY + (((endY - startY) / 2) - (widthRange / 2) * Math.cos(angle))
         };
         const midLineEnd = {
-            x: endX - (((endX - startX) / 2) + (width / 2) * Math.sin(angle)),
-            y: endY - (((endY - startY) / 2) - (width / 2) * Math.cos(angle)),
+            x: endX - (((endX - startX) / 2) + (widthRange / 2) * Math.sin(angle)),
+            y: endY - (((endY - startY) / 2) - (widthRange / 2) * Math.cos(angle)),
         };
         this.line(midLineStart, midLineEnd, innerColor, 1);
         

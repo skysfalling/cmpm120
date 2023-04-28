@@ -1,6 +1,6 @@
 // Spaceship prefab
 class Spaceship extends Phaser.GameObjects.Sprite {
-    constructor(scene, name, x, y, texture, frame, pointValue) {
+    constructor(scene, name, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.add.existing(this);   // add to existing scene
         
@@ -21,17 +21,13 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.setAngle(-90);
 
         // speed
-        this.moveSpeed = game.settings.spaceshipSpeed;
+        this.moveSpeed = 20;
     
         // spawn range
-        this.spawnHeightOffsetMin =  -25; 
-        this.spawnHeightOffsetMax = 25; 
+        this.spawnRange =  50; 
 
         // death state
         this.dead = false;
-
-        // point value
-        this.points = pointValue; 
 
         // spaceship fly animation config
         this.anims.create({
@@ -49,8 +45,8 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         // create name text
         this.gizmos.nameText = this.gizmos.createText(this.x, this.y + this.height, this.name, 10, 15)
 
-        // show spawn range
-        this.gizmos.horzlineRange(this.startX, this.startX - screen.width, this.startY, this.spawnHeightOffsetMax)
+
+        //console.log(this.startX, this.startX - screen.width, this.startY, this.spawnRange, color_pal.toInt("pink"));
     }
 
     update() {
@@ -58,7 +54,8 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         // update name text
         this.gizmos.updateText(this.gizmos.nameText, this.x, this.y + this.height, this.name, 10, 15)
 
-
+        // show spawn range
+        this.gizmos.horzlineRange(this.startX - screen.width, this.startX, this.startY, this.spawnRange, color_pal.toInt("pink"));
 
         // move spaceship left
         this.x -= this.moveSpeed;
@@ -69,7 +66,6 @@ class Spaceship extends Phaser.GameObjects.Sprite {
             this.dead = true;
             this.reset();
         }
-        
     }
 
     // position reset
@@ -79,9 +75,9 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.setActive(false);
         this.setVisible(false);
 
-        // get random height
-        let min = this.spawnHeightOffsetMin;
-        let max = this.spawnHeightOffsetMax;
+        // get random height inside spawn range
+        let min = - this.spawnRange / 2;
+        let max = this.spawnRange;
         let randomHeight = Math.floor(Math.random() * (max - min + 1)) + min;
 
         // add random height to start spawn
