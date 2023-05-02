@@ -63,7 +63,7 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         // update name text
         this.gizmos.updateText(this.gizmos.nameText, this.x, this.y + this.height, this.name, 10, 15)
 
-        if (this.showGizmos)
+        if (this.scene.showGizmos)
         {
             // show spawn range
             this.gizmos.horzlineRange(this.startX - screen.width, this.startX, this.startY, this.spawnRange, this.debug_color);
