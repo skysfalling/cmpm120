@@ -54,7 +54,9 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         this.graphics.clear();
 
         if (!this.dead) {
-            this.body.setVelocity(-this.moveSpeed, 0);
+            // move up and down in range
+            const yVelocity = Math.sin(this.x / 50) * this.spawnRange / 4;
+            this.body.setVelocity(-this.moveSpeed, yVelocity);
         }
         else { this.body.setVelocity(0, 0); }
 
