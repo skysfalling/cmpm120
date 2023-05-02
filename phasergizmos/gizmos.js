@@ -1,7 +1,14 @@
 class Gizmos {
-    constructor(scene) {
+    constructor(scene, graphics) {
         this.scene = scene;
-        this.graphics = scene.add.graphics();
+
+        // setup graphics
+        if (graphics === undefined) {
+            this.graphics = scene.add.graphics();
+        }
+        else {
+            this.graphics = graphics;
+        }
 
         this.showRectGizmos = true;
         this.showCircleGizmos = true;

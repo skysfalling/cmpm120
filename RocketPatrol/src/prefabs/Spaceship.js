@@ -1,12 +1,20 @@
 // Spaceship prefab
 class Spaceship extends Phaser.GameObjects.Sprite {
-    constructor(scene, name, x, y, texture, frame) {
-        super(scene, x, y, texture, frame);
+    constructor(scene, name, x, y, texture, frame, points = 10, moveSpeed = 100, spawnRange = 50, debug_color = 0xff0000) {
+        super(scene, x, y, texture, frame, moveSpeed);
         scene.add.existing(this);   // add to existing scene
-        
+        scene.physics.add.existing(this);  // add to physics scene
+
         this.name = name;
         this.scene = scene;
-        this.gizmos = new Gizmos(this.scene);
+        this.graphics = this.scene.add.graphics();
+        this.gizmos = new Gizmos(this.scene, this.graphics);
+        this.debug_color = debug_color;
+        this.showGizmos = false;
+
+        this.points = points;
+        this.moveSpeed = moveSpeed;
+        this.spawnRange = spawnRange; 
 
         // active position
         this.x = Math.floor(x);
@@ -19,12 +27,6 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         // start scale / rotation
         this.setScale(2);
         this.setAngle(-90);
-
-        // speed
-        this.moveSpeed = 20;
-    
-        // spawn range
-        this.spawnRange =  50; 
 
         // death state
         this.dead = false;
@@ -45,20 +47,26 @@ class Spaceship extends Phaser.GameObjects.Sprite {
         // create name text
         this.gizmos.nameText = this.gizmos.createText(this.x, this.y + this.height, this.name, 10, 15)
 
-
         //console.log(this.startX, this.startX - screen.width, this.startY, this.spawnRange, color_pal.toInt("pink"));
     }
 
-    update() {
+    update(time, deltaTime) {
+        this.graphics.clear();
+
+        if (!this.dead) {
+            this.body.setVelocity(-this.moveSpeed, 0);
+        }
+        else { this.body.setVelocity(0, 0); }
 
         // update name text
         this.gizmos.updateText(this.gizmos.nameText, this.x, this.y + this.height, this.name, 10, 15)
 
-        // show spawn range
-        this.gizmos.horzlineRange(this.startX - screen.width, this.startX, this.startY, this.spawnRange, color_pal.toInt("pink"));
+        if (this.showGizmos)
+        {
+            // show spawn range
+            this.gizmos.horzlineRange(this.startX - screen.width, this.startX, this.startY, this.spawnRange, this.debug_color);
+        }
 
-        // move spaceship left
-        this.x -= this.moveSpeed;
 
         // 'kill' spaceship once hits right edge
         if(this.x <= 0 && !this.dead) {
@@ -77,17 +85,28 @@ class Spaceship extends Phaser.GameObjects.Sprite {
 
         // get random height inside spawn range
         let min = - this.spawnRange / 2;
-        let max = this.spawnRange;
+        let max = this.spawnRange / 2;
         let randomHeight = Math.floor(Math.random() * (max - min + 1)) + min;
-
-        // add random height to start spawn
         this.x = this.startX;
         this.y = this.startY + randomHeight;
 
-        // enable
-        this.setActive(true);
-        this.setVisible(true);
+        // get random spawn delay
+        let minDelay = 500; // minimum delay of 0.5 second
+        let maxDelay = 1500; // maximum delay of 1.5 seconds
+        let randomDelay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
 
-        this.dead = false;
+        // add random delay and height to start spawn
+        this.scene.time.addEvent({
+            delay: randomDelay,
+            callback: () => {
+
+                // enable
+                this.setActive(true);
+                this.setVisible(true);
+
+                this.dead = false;
+            },
+            loop: false
+        });
     }
 }

@@ -155,18 +155,16 @@ class Editor extends Phaser.Scene {
       // #region [[ UPDATE ]] ==============================================================
       
       // >> CONSTANT UPDATES
-      this.ship01.update();  // update spaceship
-      
-      
-      
+      this.graphics.clear();
       // >> EDITOR UPDATE
       if (this.editorActive) { this.editorUpdate(delta); return; }
 
-      // >> NORMAL UPDATE
+      // >> PLAY MODE UPDATE
       if (this.player_rocket.currentState == this.player_rocket.states.FREEZE){
         this.player_rocket.states.FIRE.enter();
       }
       this.player_rocket.update(); 
+      this.ship01.update();
 
       // make camera follow player
       this.mainCamera.startFollow(this.player_rocket, false, 1, 0.05, 0, screen.height/3);
