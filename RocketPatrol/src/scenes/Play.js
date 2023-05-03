@@ -15,8 +15,14 @@ class Play extends Phaser.Scene {
         this.load.image('starfield', './assets/starfield.png');
 
         // load spritesheet
+
+        this.load.spritesheet('asteroid','./assets/bigAstroidExploding.png',{frameWidth:53,frameHeight:50, startFrame: 0, endFrame: 4});
+        //this.load.spritesheet('ast_explosion','./assets/asteroid.png',{frameWidth: 64, frameHeight: 64, startFrame: 0, endFrame: 1});
+
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
         this.load.spritesheet('rocket_fire', './assets/rocket.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 1});
+
+        this.load.image('justAsteroid', './assets/singleAsteroid.png');
 
         this.load.spritesheet('spaceship_fly', './assets/spaceship_fly_roll.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 2});
         this.load.spritesheet('spaceship_roll', './assets/spaceship_fly_roll.png', {frameWidth: 32, frameHeight: 32, startFrame: 3, endFrame: 9});
@@ -37,6 +43,7 @@ class Play extends Phaser.Scene {
         this.ship03 = new Spaceship(this, "ship3", game.config.width, game.config.height * 0.75, 'spaceship', 0, 10, this.defaultShipSpeed);
         this.fastShip = new Spaceship(this, "fastboi", game.config.width, game.config.height * 0.5, 'spaceship', 0, 10, (this.defaultShipSpeed*2), screen.height - (format.margin*4), color_pal.toInt("green"));
         this.fastShip.setScale(1);
+        this.asteroid0 = new Asteroid(this, "asteroid0", game.config.width+100, game.config.height * 0.60, 'asteroid'/*'justAsteroid'*/, 0);
 
         // define keys
         keyF = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
@@ -62,6 +69,16 @@ class Play extends Phaser.Scene {
             }),
             frameRate: 30
         });
+        this.anims.create({
+            key: 'ast_explosion',
+            frames: this.anims.generateFrameNumbers('asteroid', { 
+                start: 0, 
+                end: 4, 
+                first: 0
+            }),
+            frameRate: 30,
+        });
+
 
         //#region  >>>>> GAME UI 
         // initialize score
@@ -114,6 +131,7 @@ class Play extends Phaser.Scene {
                 this.ship02.moveSpeed = this.level * this.defaultShipSpeed;
                 this.ship03.moveSpeed = this.level * this.defaultShipSpeed;
                 this.fastShip.moveSpeed = this.level * (this.defaultShipSpeed * 2);
+                //this.asteroid0.moveSpeed = this.level * (this.asteroid0.moveSpeed)
 
             },
             callbackScope: this,
@@ -154,6 +172,7 @@ class Play extends Phaser.Scene {
             this.ship02.update();
             this.ship03.update();
             this.fastShip.update();
+            this.asteroid0.update();
         }
 
         // << CHECK PLAYER OUT OF BOUNDS >>
@@ -181,6 +200,11 @@ class Play extends Phaser.Scene {
         if (!this.fastShip.dead && this.checkCollision(this.p1Rocket, this.fastShip))
         {
             this.shipExplode(this.fastShip);
+            this.p1Rocket.reset();
+        }
+        if(!this.asteroid0.dead && this.checkCollision(this.p1Rocket, this.asteroid0))
+        {
+            this.asteroidExplode(this.asteroid0);
             this.p1Rocket.reset();
         }
     }
@@ -213,6 +237,54 @@ class Play extends Phaser.Scene {
 
         // score add and repaint
         this.p1Score += ship.points;        
+        this.scoreValueText.setText(this.p1Score.toString())
+        this.addTime();
+
+        this.sound.play('sfx_explosion');
+    }
+    asteroidExplode(asteroid) {
+        // temporarily hide ship
+        asteroid.alpha = 0;
+        asteroid.dead = true;
+        let ast_boom = this.add.sprite(asteroid.x, asteroid.y, 'ast_explosion').setOrigin(0, 0);
+        console.log(asteroid.x +" "+ asteroid.y);
+        console.log(ast_boom.x+ " "+ ast_boom.y);
+        ast_boom.scale= asteroid.ast_scale;
+        console.log(ast_boom.x+ " "+ ast_boom.y);
+        console.log();
+        ast_boom.x=asteroid.x;
+        ast_boom.y=asteroid.y;
+        ast_boom.rotation=asteroid.rotation;
+        ast_boom.anims.play('ast_explosion');             // play explode animation
+
+        ast_boom.on('animationcomplete', () => {    // callback after anim completes
+            asteroid.respawn();                       // reset ship position
+            asteroid.alpha = 1;                       // make ship visible again
+            ast_boom.destroy();                       // remove explosion sprite
+        });
+        /*
+        this.time.addEvent({
+            delay: 3000,
+            callback: () => {
+                asteroid.play("explode");
+                asteroid.once(Phaser.Animations.Events.SPRITE_ANIMATION_COMPLETE, () => {
+                    asteroid.destroy();
+                });
+            }
+        });*/
+
+        // create explosion sprite at asteroid's position
+        /*
+        let ast_boom = this.add.spritesheet(asteroid.x, asteroid.y, 'explosion').setOrigin(0, 0);
+        ast_boom.anims.play('explode');             // play explode animation
+        ast_boom.on('animationcomplete', () => {    // callback after anim completes
+            asteroid.reset();                         // reset ship position
+            asteroid.alpha = 1;                       // make ship visible again
+            boom.destroy();                       // remove explosion sprite
+        });*/
+
+        // score add and repaint
+        this.p1Score += asteroid.points;        
         this.scoreValueText.setText(this.p1Score.toString())
         this.addTime();
 
