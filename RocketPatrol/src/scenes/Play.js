@@ -284,7 +284,7 @@ class Play extends Phaser.Scene {
         });*/
 
         // score add and repaint
-        this.p1Score += asteroid.points;        
+        this.p1Score -= asteroid.points;        
         this.scoreValueText.setText(this.p1Score.toString())
         this.addTime();
 
