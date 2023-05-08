@@ -11,8 +11,11 @@ class Play extends Phaser.Scene {
         this.defaultShipSpeed = 100;
 
         // load images/tile sprites
-        this.load.image('spaceship', './assets/spaceship.png');
-        this.load.image('starfield', './assets/starfield.png');
+        this.load.image('spaceship', './assets/spaceship.png');     // spaceship
+        this.load.image('starfield', './assets/starfield.png');     // original starfield
+        // add in hamster bunker
+        // updated rocket? to keep it simple we might want to just keep using the spaceship at the start, except it just has a projectile
+        
 
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png', {frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9});
@@ -68,7 +71,6 @@ class Play extends Phaser.Scene {
         this.p1Score = 0;
 
         // score value
-        // time passed
         this.scoreValueText = this.add.text(screen.topLeft.x + (format.margin * 3), screen.topLeft.y + format.margin, 'Score', headerConfig).setOrigin(0.5,0.5);
         
         // time passed
@@ -87,7 +89,7 @@ class Play extends Phaser.Scene {
 
         //#endregion
 
-        // GAME OVER flag
+        // GAME OVER flag  NOTE TO ADJUST THIS LATER!!
         this.gameOver = false;
         this.startTime = 10;
         this.curTime = this.startTime;
